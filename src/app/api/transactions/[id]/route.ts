@@ -1,25 +1,31 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db/prisma'
 import { getExplorerTxUrl } from '@/lib/config/chains'
+import { sendWebhookNotifications } from '@/lib/webhook/sender'
 
 export async function GET(
-  request: Request,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  console.log(`GET request for transaction ${params.id}`)
+
   try {
     const transaction = await prisma.transaction.findUnique({
       where: {
         id: params.id,
       },
+      include: {
+        merchant: true
+      }
     })
-    
+
     if (!transaction) {
       return NextResponse.json(
         { error: 'Transaction not found' },
         { status: 404 }
       )
     }
-    
+
     // Add explorer URL to the response
     const response = {
       ...transaction,
@@ -27,7 +33,7 @@ export async function GET(
         ? getExplorerTxUrl(transaction.chainId, transaction.txHash)
         : null
     }
-    
+
     return NextResponse.json(response)
   } catch (error) {
     console.error('Get transaction error:', error)
@@ -39,13 +45,13 @@ export async function GET(
 }
 
 export async function PATCH(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     const body = await request.json()
     
-    // Validate transaction exists
+    // Find the transaction
     const transaction = await prisma.transaction.findUnique({
       where: {
         id: params.id,
@@ -54,7 +60,7 @@ export async function PATCH(
         merchant: true
       }
     })
-    
+
     if (!transaction) {
       return NextResponse.json(
         { error: 'Transaction not found' },
@@ -62,10 +68,7 @@ export async function PATCH(
       )
     }
     
-    // In a real implementation, you would verify the request
-    // is coming from an authorized source
-    
-    // Update transaction status and txHash if provided
+    // Update the transaction
     const updatedTransaction = await prisma.transaction.update({
       where: {
         id: params.id,
@@ -76,69 +79,62 @@ export async function PATCH(
       },
     })
     
-    // Send webhook notification if merchant has webhook URL configured
-    if (transaction.merchant.webhookUrl && body.status && body.status !== transaction.status) {
-      await sendWebhookNotification(
-        transaction.merchant.webhookUrl,
-        transaction.merchant.webhookKey,
-        {
-          id: updatedTransaction.id,
-          status: updatedTransaction.status,
-          txHash: updatedTransaction.txHash,
-          amount: updatedTransaction.amount,
-          currency: updatedTransaction.currency,
-          chainId: updatedTransaction.chainId,
-          updatedAt: updatedTransaction.updatedAt
-        }
-      )
+    // Get active webhooks for the merchant
+    const webhooks = await prisma.webhook.findMany({
+      where: {
+        merchantId: transaction.merchantId,
+        isActive: true
+      }
+    })
+    
+    // Determine the event type based on the status
+    let eventType = 'transaction.updated'
+    if (body.status) {
+      switch (body.status) {
+        case 'COMPLETED':
+          eventType = 'payment.completed'
+          break
+        case 'FAILED':
+          eventType = 'payment.failed'
+          break
+        case 'PROCESSING':
+          eventType = 'payment.processing'
+          break
+      }
     }
     
-    return NextResponse.json(updatedTransaction)
+    // Format the response with explorer URL
+    const response = {
+      ...updatedTransaction,
+      explorerUrl: updatedTransaction.txHash 
+        ? getExplorerTxUrl(updatedTransaction.chainId, updatedTransaction.txHash)
+        : null
+    }
+    
+    // Send webhook notifications if there are active webhooks
+    if (webhooks.length > 0) {
+      try {
+        await sendWebhookNotifications(
+          webhooks.map((webhook: any) => ({
+            url: webhook.url,
+            secret: webhook.secret,
+            events: webhook.events as string[]
+          })),
+          eventType,
+          response
+        )
+      } catch (error) {
+        console.error('Failed to send webhook notifications:', error)
+        // Continue even if webhook sending fails
+      }
+    }
+    
+    return NextResponse.json(response)
   } catch (error) {
     console.error('Update transaction error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
     )
-  }
-}
-
-// Helper function to send webhook notifications
-async function sendWebhookNotification(
-  webhookUrl: string,
-  webhookKey: string | null,
-  payload: any
-) {
-  try {
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json'
-    }
-    
-    // Add webhook key as authorization if available
-    if (webhookKey) {
-      headers['Authorization'] = `Bearer ${webhookKey}`
-    }
-    
-    // Add timestamp and signature for security
-    const timestamp = Date.now().toString()
-    headers['X-Webhook-Timestamp'] = timestamp
-    
-    // In a real implementation, you would sign the payload with a secret key
-    // headers['X-Webhook-Signature'] = createSignature(payload, webhookKey, timestamp)
-    
-    const response = await fetch(webhookUrl, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(payload)
-    })
-    
-    if (!response.ok) {
-      console.error(`Webhook notification failed: ${response.status} ${response.statusText}`)
-    }
-    
-    return response.ok
-  } catch (error) {
-    console.error('Webhook notification error:', error)
-    return false
   }
 }

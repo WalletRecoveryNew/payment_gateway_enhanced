@@ -1,6 +1,15 @@
 import '../components.css';
+import { ReactNode } from 'react';
 
-export default function TestimonialCard({ avatar, name, company, testimonial, rating = 5 }) {
+interface TestimonialCardProps {
+  avatar: ReactNode;
+  name: string;
+  company: string;
+  testimonial: string;
+  rating?: number;
+}
+
+export default function TestimonialCard({ avatar, name, company, testimonial, rating = 5 }: TestimonialCardProps) {
   return (
     <div className="testimonial-card">
       <div className="flex items-center mb-6">

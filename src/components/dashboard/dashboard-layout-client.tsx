@@ -119,7 +119,7 @@ export default function DashboardLayoutClient({ children }: DashboardLayoutProps
       <div className="flex-1 md:ml-64">
         {/* Header */}
         <header className="bg-crypto-blue-dark/30 backdrop-blur-md border-b border-white/5 sticky top-0 z-10">
-          <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
             <div className="flex items-center md:hidden">
               <span className="text-xl font-bold text-crypto-white ml-8">
                 Crypto<span className="text-crypto-cyan">Flow</span>
@@ -140,7 +140,7 @@ export default function DashboardLayoutClient({ children }: DashboardLayoutProps
         </header>
         
         {/* Page content */}
-        <main>
+        <main className="container mx-auto px-4 md:px-6 py-6">
           {children}
         </main>
       </div>

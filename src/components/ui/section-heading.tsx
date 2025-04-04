@@ -1,6 +1,13 @@
 import '../components.css';
 
-export default function SectionHeading({ badge, title, description, highlightedWord }) {
+interface SectionHeadingProps {
+  badge?: string;
+  title: string;
+  description?: string;
+  highlightedWord: string;
+}
+
+export default function SectionHeading({ badge, title, description, highlightedWord }: SectionHeadingProps) {
   return (
     <div className="text-center mb-16">
       {badge && (

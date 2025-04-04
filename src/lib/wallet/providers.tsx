@@ -1,142 +1,178 @@
-'use client'
+'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react'
-import { createConfig, WagmiProvider, useAccount, useConnect, useDisconnect } from 'wagmi'
-import { createWeb3Modal } from '@web3modal/wagmi'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { supportedChains } from '../config/chains'
-import { mainnet } from 'viem/chains'
-import { http, createPublicClient } from 'viem'
-
-// Solana imports
-import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react'
-import { PhantomWalletAdapter, SolflareWalletAdapter, TorusWalletAdapter } from '@solana/wallet-adapter-wallets'
-import { clusterApiUrl } from '@solana/web3.js'
-
-// Create wagmi config
-const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'YOUR_PROJECT_ID'
-
-const metadata = {
-  name: 'Crypto Payment Gateway',
-  description: 'A multi-chain crypto payment gateway',
-  url: 'https://crypto-payment-gateway.com',
-  icons: ['https://avatars.githubusercontent.com/u/37784886']
-}
-
-const config = createConfig({
-  chains: supportedChains,
-  transports: {
-    [mainnet.id]: http('https://eth-mainnet.g.alchemy.com/v2/YOUR_ALCHEMY_KEY'),
-    // Add other chain transports as needed
-  },
-})
-
-// Create web3modal instance
-const web3modal = createWeb3Modal({
-  wagmiConfig: config,
-  projectId,
-  enableAnalytics: true,
-  themeMode: 'dark',
-  themeVariables: {
-    '--w3m-accent': '#00FFFF',
-    '--w3m-background-color': '#0A1929',
-  },
-})
-
-// Create query client
-const queryClient = new QueryClient()
-
-// Create Solana wallet adapters
-const getSolanaWalletAdapters = () => {
-  return [
-    new PhantomWalletAdapter(),
-    new SolflareWalletAdapter(),
-    new TorusWalletAdapter(),
-  ]
-}
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 // Create wallet context
 type WalletContextType = {
-  isConnected: boolean
-  address: string | null
-  chainId: number | null
-  connect: () => void
-  disconnect: () => void
-  isSolana: boolean
-  connectSolana: () => void
-  disconnectSolana: () => void
-  solanaAddress: string | null
-}
+  isConnected: boolean;
+  address?: string | undefined;
+  connect: () => Promise<void>;
+  disconnect: () => Promise<void>;
+  isSolana: boolean;
+  solanaAddress?: string | undefined;
+  chainId?: number | undefined;
+};
 
 const WalletContext = createContext<WalletContextType>({
   isConnected: false,
-  address: null,
-  chainId: null,
-  connect: () => {},
-  disconnect: () => {},
+  address: undefined,
+  connect: async () => {},
+  disconnect: async () => {},
   isSolana: false,
-  connectSolana: () => {},
-  disconnectSolana: () => {},
-  solanaAddress: null,
-})
+  solanaAddress: undefined,
+  chainId: undefined
+});
 
-export const useWallet = () => useContext(WalletContext)
-
-// Wallet provider component
-export function WalletProviders({ children }: { children: React.ReactNode }) {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <WagmiProvider config={config}>
-        <ConnectionProvider endpoint={clusterApiUrl('mainnet-beta')}>
-          <WalletProvider wallets={getSolanaWalletAdapters()} autoConnect>
-            <WalletContextProvider>
-              {children}
-            </WalletContextProvider>
-          </WalletProvider>
-        </ConnectionProvider>
-      </WagmiProvider>
-    </QueryClientProvider>
-  )
+export function useWallet() {
+  return useContext(WalletContext);
 }
 
-// Wallet context provider
-function WalletContextProvider({ children }: { children: React.ReactNode }) {
-  const { isConnected, address, chainId } = useAccount()
-  const { connect } = useConnect()
-  const { disconnect } = useDisconnect()
-  
-  // Solana state
-  const [isSolana, setIsSolana] = useState(false)
-  const [solanaAddress, setSolanaAddress] = useState<string | null>(null)
-  
-  // Mock Solana functions for now - will be replaced with actual Solana wallet adapter
-  const connectSolana = () => {
-    setIsSolana(true)
-    setSolanaAddress('SoL' + Math.random().toString(36).substring(2, 10))
-  }
-  
-  const disconnectSolana = () => {
-    setIsSolana(false)
-    setSolanaAddress(null)
-  }
-  
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <WalletProvider>
+      {children}
+    </WalletProvider>
+  );
+}
+
+export function WalletProvider({ children }: { children: React.ReactNode }) {
+  const [isConnected, setIsConnected] = useState(false);
+  const [address, setAddress] = useState<string>();
+  const [isSolana, setIsSolana] = useState(false);
+  const [solanaAddress, setSolanaAddress] = useState<string>();
+  const [chainId, setChainId] = useState<number>();
+
+  const connect = async () => {
+    try {
+      // For Solana wallets
+      if (window.solana && window.solana.isPhantom) {
+        setIsSolana(true);
+        await window.solana.connect();
+        if (window.solana.publicKey) {
+          const solPubkey = window.solana.publicKey.toString();
+          setAddress(solPubkey);
+          setSolanaAddress(solPubkey);
+          setChainId(501); // Solana mainnet chain ID
+          setIsConnected(true);
+        }
+      } 
+      // For Ethereum wallets
+      else if (window.ethereum) {
+        setIsSolana(false);
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' }) as string[];
+        if (accounts.length > 0) {
+          setAddress(accounts[0]);
+          
+          // Get the current chain ID
+          const chainIdHex = await window.ethereum.request({ method: 'eth_chainId' }) as string;
+          setChainId(parseInt(chainIdHex, 16));
+          
+          setIsConnected(true);
+        }
+      } else {
+        console.error('No wallet found');
+      }
+    } catch (error) {
+      console.error('Error connecting wallet:', error);
+    }
+  };
+
+  const disconnect = async () => {
+    try {
+      if (window.solana && isSolana) {
+        await window.solana.disconnect();
+        setAddress(undefined);
+        setSolanaAddress(undefined);
+        setIsConnected(false);
+        setIsSolana(false);
+      }
+    } catch (error) {
+      console.error('Error disconnecting wallet:', error);
+    }
+  };
+
+  useEffect(() => {
+    // Ethereum wallet events
+    if (window.ethereum) {
+      const handleAccountsChanged = (accounts: string[]) => {
+        if (accounts.length === 0) {
+          setIsConnected(false);
+          setAddress(undefined);
+        } else {
+          setIsConnected(true);
+          setAddress(accounts[0]);
+        }
+      };
+
+      window.ethereum.on('accountsChanged', handleAccountsChanged as (...args: unknown[]) => void);
+
+      // Check if already connected
+      window.ethereum
+        .request({ method: 'eth_accounts' })
+        .then((accounts: unknown) => {
+          if (Array.isArray(accounts) && accounts.length > 0) {
+            setIsConnected(true);
+            setAddress(accounts[0] as string);
+            setIsSolana(false);
+            
+            // Get chain ID
+            window.ethereum?.request({ method: 'eth_chainId' })
+              .then((chainId: unknown) => {
+                if (typeof chainId === 'string') {
+                  setChainId(parseInt(chainId, 16));
+                }
+              })
+              .catch(console.error);
+          }
+        })
+        .catch(console.error);
+    }
+
+    // Solana wallet events
+    if (window.solana) {
+      const handleSolanaConnect = () => {
+        if (window.solana.publicKey) {
+          setIsConnected(true);
+          setIsSolana(true);
+          const pubkey = window.solana.publicKey.toString();
+          setAddress(pubkey);
+          setSolanaAddress(pubkey);
+          setChainId(501); // Solana mainnet
+        }
+      };
+
+      window.solana.on('connect', handleSolanaConnect);
+
+      // Check if already connected
+      if (window.solana.isPhantom && window.solana.publicKey) {
+        handleSolanaConnect();
+      }
+    }
+
+    return () => {
+      // Cleanup
+      if (window.ethereum) {
+        window.ethereum.removeListener('accountsChanged', () => {});
+      }
+      if (window.solana) {
+        window.solana.removeAllListeners();
+      }
+    };
+  }, []);
+
   const value = {
     isConnected,
-    address: address || null,
-    chainId: chainId || null,
-    connect: () => {
-      web3modal.open()
-    },
+    address: isSolana ? solanaAddress : address,
+    connect,
     disconnect,
     isSolana,
-    connectSolana,
-    disconnectSolana,
     solanaAddress,
-  }
+    chainId
+  };
   
   return (
     <WalletContext.Provider value={value}>
       {children}
     </WalletContext.Provider>
-  )
+  );
 }

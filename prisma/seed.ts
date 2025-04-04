@@ -1,4 +1,4 @@
-import { PrismaClient, KYCStatus, TransactionStatus } from '@prisma/client'
+import { PrismaClient, TransactionStatus } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
@@ -57,4 +57,4 @@ main()
   })
   .finally(async () => {
     await prisma.$disconnect()
-  }) 
+  })

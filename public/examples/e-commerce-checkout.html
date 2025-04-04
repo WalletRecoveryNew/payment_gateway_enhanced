@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CryptoFlow E-commerce Checkout Example</title>
+  <style>
+    :root {
+      --primary-color: #7b3fe4;
+      --secondary-color: #5a2da0;
+      --light-color: #f5f5f5;
+      --dark-color: #333333;
+      --border-color: #e0e0e0;
+      --success-color: #28a745;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      line-height: 1.6;
+      color: var(--dark-color);
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background-color: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 15px 0;
+    }
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+    
+    .cart-icon {
+      position: relative;
+      font-size: 24px;
+    }
+    
+    .cart-count {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background-color: var(--primary-color);
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+    
+    main {
+      display: flex;
+      margin-top: 30px;
+      gap: 30px;
+    }
+    
+    .checkout-container {
+      flex: 2;
+    }
+    
+    .order-summary {
+      flex: 1;
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      align-self: flex-start;
+    }
+    
+    .checkout-form {
+      background-color: white;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    h1, h2, h3 {
+      color: var(--secondary-color);
+      margin-top: 0;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+    
+    .form-row .form-group {
+      flex: 1;
+    }
+    
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .order-total {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 0;
+      font-weight: bold;
+      font-size: 18px;
+      border-top: 2px solid var(--border-color);
+      margin-top: 15px;
+    }
+    
+    .payment-options {
+      margin-top: 30px;
+    }
+    
+    .payment-options h3 {
+      margin-bottom: 15px;
+    }
+    
+    .payment-method {
+      margin-bottom: 20px;
+    }
+    
+    .payment-method-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .payment-method-logo {
+      height: 30px;
+    }
+    
+    .payment-method-content {
+      padding: 15px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+    
+    .success-message {
+      background-color: var(--success-color);
+      color: white;
+      padding: 20px;
+      border-radius: 6px;
+      text-align: center;
+      margin-bottom: 20px;
+      display: none;
+    }
+    
+    @media (max-width: 768px) {
+      main {
+        flex-direction: column;
+      }
+      
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">CryptoShop</div>
+        <div class="cart-icon">🛒 <span class="cart-count">3</span></div>
+      </div>
+    </div>
+  </header>
+  
+  <div class="container">
+    <div id="success-message" class="success-message">
+      <h2>Payment Successful!</h2>
+      <p>Your order has been placed and will be processed shortly.</p>
+    </div>
+    
+    <main>
+      <div class="checkout-container">
+        <div class="checkout-form">
+          <h1>Checkout</h1>
+          
+          <h2>Shipping Information</h2>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="your@email.com">
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="first-name">First Name</label>
+              <input type="text" id="first-name" placeholder="First Name">
+            </div>
+            <div class="form-group">
+              <label for="last-name">Last Name</label>
+              <input type="text" id="last-name" placeholder="Last Name">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="address">Address</label>
+            <input type="text" id="address" placeholder="Street Address">
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="city">City</label>
+              <input type="text" id="city" placeholder="City">
+            </div>
+            <div class="form-group">
+              <label for="state">State</label>
+              <input type="text" id="state" placeholder="State/Province">
+            </div>
+            <div class="form-group">
+              <label for="zip">Zip Code</label>
+              <input type="text" id="zip" placeholder="Zip/Postal Code">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="country">Country</label>
+            <select id="country">
+              <option value="us">United States</option>
+              <option value="ca">Canada</option>
+              <option value="uk">United Kingdom</option>
+              <option value="au">Australia</option>
+            </select>
+          </div>
+          
+          <div class="payment-options">
+            <h2>Payment Method</h2>
+            
+            <div class="payment-method">
+              <div class="payment-method-header">
+                <input type="radio" id="credit-card" name="payment-method" checked>
+                <label for="credit-card">Credit Card</label>
+                <div style="flex-grow: 1;"></div>
+                <img src="https://via.placeholder.com/40x25?text=Visa" alt="Visa" class="payment-method-logo">
+                <img src="https://via.placeholder.com/40x25?text=MC" alt="MasterCard" class="payment-method-logo">
+                <img src="https://via.placeholder.com/40x25?text=Amex" alt="American Express" class="payment-method-logo">
+              </div>
+            </div>
+            
+            <div class="payment-method">
+              <div class="payment-method-header">
+                <input type="radio" id="crypto" name="payment-method">
+                <label for="crypto">Cryptocurrency</label>
+                <div style="flex-grow: 1;"></div>
+                <img src="https://via.placeholder.com/25x25?text=BTC" alt="Bitcoin" class="payment-method-logo">
+                <img src="https://via.placeholder.com/25x25?text=ETH" alt="Ethereum" class="payment-method-logo">
+                <img src="https://via.placeholder.com/25x25?text=SOL" alt="Solana" class="payment-method-logo">
+              </div>
+              
+              <div id="crypto-payment-options" class="payment-method-content" style="display: none;">
+                <!-- CryptoFlow Payment Button -->
+                <div id="crypto-payment-button" 
+                     data-api-key="pk_test_demo123456789"
+                     data-amount="149.99" 
+                     data-currency="USDT" 
+                     data-chain-id="1"
+                     data-description="Order #12345 - Premium Wireless Headphones"
+                     data-button-text="Pay $149.99 with Crypto"
+                     data-button-theme="crypto"
+                     data-button-size="large">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="order-summary">
+        <h2>Order Summary</h2>
+        
+        <div class="order-item">
+          <div>Premium Wireless Headphones</div>
+          <div>$129.99</div>
+        </div>
+        
+        <div class="order-item">
+          <div>Extended Warranty (2 years)</div>
+          <div>$19.99</div>
+        </div>
+        
+        <div class="order-item">
+          <div>Shipping</div>
+          <div>$0.00</div>
+        </div>
+        
+        <div class="order-total">
+          <div>Total</div>
+          <div>$149.99</div>
+        </div>
+      </div>
+    </main>
+  </div>
+  
+  <!-- Load the CryptoFlow SDK and payment button -->
+  <script src="../js/cryptoflow-sdk.js"></script>
+  <script src="../js/payment-button.js"></script>
+  
+  <script>
+    // Initialize CryptoFlow SDK
+    const cryptoflow = new CryptoFlow('pk_test_demo123456789', { debug: true });
+    
+    // Show crypto payment options when crypto payment method is selected
+    document.getElementById('crypto').addEventListener('change', function() {
+      document.getElementById('crypto-payment-options').style.display = 'block';
+    });
+    
+    document.getElementById('credit-card').addEventListener('change', function() {
+      document.getElementById('crypto-payment-options').style.display = 'none';
+    });
+    
+    // Listen for payment completion
+    cryptoflow.on('payment.completed', function(payment) {
+      console.log('Payment completed:', payment);
+      document.getElementById('success-message').style.display = 'block';
+      document.querySelector('.checkout-form').style.display = 'none';
+    });
+    
+    // Listen for payment failure
+    cryptoflow.on('payment.failed', function(payment) {
+      console.log('Payment failed:', payment);
+      alert('Payment failed. Please try again.');
+    });
+  </script>
+</body>
+</html>

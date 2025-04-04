@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Loader2, ExternalLink } from 'lucide-react'
+import { useState } from 'react'
+import { Loader2 } from 'lucide-react'
 import { useWallet } from '@/lib/wallet/providers'
 import { chainNameMap } from '@/lib/config/chains'
 
@@ -13,9 +13,7 @@ export function ConnectButton() {
     connect, 
     disconnect,
     isSolana,
-    solanaAddress,
-    connectSolana,
-    disconnectSolana
+    solanaAddress
   } = useWallet()
   
   const [isLoading, setIsLoading] = useState(false)
@@ -23,27 +21,14 @@ export function ConnectButton() {
 
   // Handle connection
   const handleConnect = async () => {
-    if (showSolana) {
-      if (isSolana) {
-        disconnectSolana()
-      } else {
-        setIsLoading(true)
-        try {
-          connectSolana()
-        } finally {
-          setIsLoading(false)
-        }
-      }
+    if (isConnected) {
+      disconnect()
     } else {
-      if (isConnected) {
-        disconnect()
-      } else {
-        setIsLoading(true)
-        try {
-          connect()
-        } finally {
-          setIsLoading(false)
-        }
+      setIsLoading(true)
+      try {
+        await connect()
+      } finally {
+        setIsLoading(false)
       }
     }
   }
@@ -54,77 +39,65 @@ export function ConnectButton() {
   }
 
   // Format address for display
-  const formatAddress = (addr: string | null) => {
+  const formatAddress = (addr: string) => {
     if (!addr) return ''
-    return `${addr.slice(0, 6)}...${addr.slice(-4)}`
+    return `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`
   }
 
-  // Get connected status
-  const getConnectedStatus = () => {
-    if (showSolana) {
-      return isSolana
-    }
-    return isConnected
-  }
-
-  // Get display address
-  const getDisplayAddress = () => {
-    if (showSolana) {
-      return formatAddress(solanaAddress)
-    }
-    return formatAddress(address)
-  }
-
-  // Get network name
-  const getNetworkName = () => {
-    if (showSolana) {
-      return 'Solana'
-    }
-    if (chainId && chainNameMap[chainId]) {
-      return chainNameMap[chainId]
-    }
-    return 'Unknown'
-  }
+  // Get current wallet address
+  const currentAddress = isSolana ? solanaAddress : address
+  
+  // Get current chain name
+  const currentChain = isSolana 
+    ? 'Solana' 
+    : (chainId && chainId in chainNameMap) 
+      ? chainNameMap[chainId] 
+      : 'Unknown'
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-crypto-gray-light">
-          {showSolana ? 'Solana Wallet' : 'EVM Wallet'}
-        </span>
-        <button 
-          onClick={toggleWalletType}
-          className="text-xs text-crypto-cyan hover:underline"
-        >
-          Switch to {showSolana ? 'EVM' : 'Solana'}
-        </button>
-      </div>
-      
-      <button
-        onClick={handleConnect}
-        disabled={isLoading}
-        className="flex items-center justify-center px-4 py-2 rounded-lg bg-crypto-cyan text-crypto-blue-dark hover:bg-crypto-cyan/90 disabled:opacity-50 transition-colors"
-      >
-        {isLoading ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Connecting...
-          </>
-        ) : getConnectedStatus() ? (
-          <>
-            Disconnect {getDisplayAddress()}
-          </>
-        ) : (
-          <>
-            Connect {showSolana ? 'Solana' : 'Wallet'}
-          </>
-        )}
-      </button>
-      
-      {getConnectedStatus() && (
-        <div className="mt-2 text-xs text-crypto-gray-light flex items-center justify-center">
-          Connected to {getNetworkName()}
+    <div>
+      {isConnected ? (
+        <div className="flex flex-col items-center">
+          <div className="flex items-center mb-2">
+            <div className={`w-3 h-3 rounded-full mr-2 ${isSolana ? 'bg-purple-500' : 'bg-green-500'}`}></div>
+            <span className="text-crypto-white text-sm">{currentChain}</span>
+          </div>
+          
+          <div className="bg-crypto-blue-dark/30 px-4 py-2 rounded-lg mb-3 border border-white/10">
+            <span className="text-crypto-white font-mono">{formatAddress(currentAddress || '')}</span>
+          </div>
+          
+          <div className="flex space-x-2">
+            <button
+              onClick={handleConnect}
+              className="px-4 py-2 bg-crypto-cyan/10 text-crypto-cyan border border-crypto-cyan/20 rounded-md hover:bg-crypto-cyan/20 transition-colors"
+            >
+              Disconnect
+            </button>
+            
+            <button
+              onClick={toggleWalletType}
+              className="px-4 py-2 bg-white/10 text-crypto-white rounded-md hover:bg-white/20 transition-colors"
+            >
+              Switch to {showSolana ? 'EVM' : 'Solana'}
+            </button>
+          </div>
         </div>
+      ) : (
+        <button
+          onClick={handleConnect}
+          disabled={isLoading}
+          className="px-6 py-3 bg-crypto-cyan text-crypto-blue-dark rounded-md font-medium hover:bg-crypto-cyan/90 transition-colors disabled:opacity-70 flex items-center justify-center"
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="animate-spin mr-2 h-4 w-4" />
+              Connecting...
+            </>
+          ) : (
+            <>Connect {showSolana ? 'Solana' : 'Wallet'}</>
+          )}
+        </button>
       )}
     </div>
   )

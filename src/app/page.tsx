@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, ArrowUpRight, Shield, Coins, CreditCard, BarChart3, Globe, Clock, CheckCircle } from 'lucide-react'
@@ -117,20 +119,195 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trusted By Section */}
-      <section className="py-12 border-y border-white/10 bg-white/5 backdrop-blur-sm">
+      {/* Pricing Section */}
+      <section id="pricing" className="py-24 border-t border-white/10">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-10">
-            <h2 className="text-xl font-medium text-crypto-gray-light">
-              Trusted by leading companies worldwide
+          <div className="text-center mb-16">
+            <div className="inline-block px-4 py-1 bg-crypto-cyan/10 rounded-full text-crypto-cyan text-sm font-medium mb-4">
+              Pricing
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-crypto-white mb-6">
+              Simple, <span className="text-crypto-cyan">Transparent</span> Pricing
             </h2>
+            <p className="text-xl text-crypto-gray-light max-w-3xl mx-auto leading-relaxed">
+              Pay only for what you use with our competitive transaction fees
+            </p>
           </div>
-          <div className="flex flex-wrap justify-center items-center gap-12 opacity-70">
-            <Image src="/logos/logo1.svg" alt="Company Logo" width={120} height={40} className="grayscale hover:grayscale-0 transition-all duration-300" />
-            <Image src="/logos/logo2.svg" alt="Company Logo" width={120} height={40} className="grayscale hover:grayscale-0 transition-all duration-300" />
-            <Image src="/logos/logo3.svg" alt="Company Logo" width={120} height={40} className="grayscale hover:grayscale-0 transition-all duration-300" />
-            <Image src="/logos/logo4.svg" alt="Company Logo" width={120} height={40} className="grayscale hover:grayscale-0 transition-all duration-300" />
-            <Image src="/logos/logo5.svg" alt="Company Logo" width={120} height={40} className="grayscale hover:grayscale-0 transition-all duration-300" />
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Standard Plan */}
+            <div className="glass-card p-8 rounded-xl hover:shadow-lg hover:shadow-crypto-cyan/10 transition-all duration-300">
+              <h3 className="text-2xl font-semibold text-crypto-white mb-4">Standard</h3>
+              <div className="text-crypto-cyan text-4xl font-bold mb-6">0.5%</div>
+              <p className="text-crypto-gray-light mb-6 leading-relaxed">
+                Our standard rate for all transactions with no hidden fees
+              </p>
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-center text-crypto-gray-light">
+                  <CheckCircle className="h-5 w-5 text-crypto-cyan mr-2" />
+                  All payment methods
+                </li>
+                <li className="flex items-center text-crypto-gray-light">
+                  <CheckCircle className="h-5 w-5 text-crypto-cyan mr-2" />
+                  Priority support
+                </li>
+                <li className="flex items-center text-crypto-gray-light">
+                  <CheckCircle className="h-5 w-5 text-crypto-cyan mr-2" />
+                  Advanced analytics
+                </li>
+              </ul>
+              <Link 
+                href="/signup" 
+                className="w-full bg-crypto-cyan text-crypto-blue-dark px-6 py-3 rounded-md font-medium hover:bg-crypto-cyan/90 transition-all duration-200 text-center block"
+              >
+                Get Started
+              </Link>
+            </div>
+            
+            {/* Launch Offer */}
+            <div className="glass-card p-8 rounded-xl border-2 border-crypto-cyan/50 relative hover:shadow-lg hover:shadow-crypto-cyan/10 transition-all duration-300">
+              <div className="absolute top-0 right-0 bg-crypto-cyan text-crypto-blue-dark px-3 py-1 text-xs font-bold rounded-bl-md rounded-tr-md">
+                SPECIAL OFFER
+              </div>
+              <h3 className="text-2xl font-semibold text-crypto-white mb-4">Launch Offer</h3>
+              <div className="text-crypto-cyan text-4xl font-bold mb-6">0.25%</div>
+              <p className="text-crypto-gray-light mb-6 leading-relaxed">
+                Limited-time discounted rate for early adopters
+              </p>
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-center text-crypto-gray-light">
+                  <CheckCircle className="h-5 w-5 text-crypto-cyan mr-2" />
+                  All Standard features
+                </li>
+                <li className="flex items-center text-crypto-gray-light">
+                  <CheckCircle className="h-5 w-5 text-crypto-cyan mr-2" />
+                  Rate locked for 12 months
+                </li>
+                <li className="flex items-center text-crypto-gray-light">
+                  <CheckCircle className="h-5 w-5 text-crypto-cyan mr-2" />
+                  Dedicated onboarding
+                </li>
+              </ul>
+              <Link 
+                href="/signup" 
+                className="w-full bg-crypto-cyan text-crypto-blue-dark px-6 py-3 rounded-md font-medium hover:bg-crypto-cyan/90 transition-all duration-200 text-center block"
+              >
+                Claim Offer
+              </Link>
+            </div>
+            
+            {/* Enterprise */}
+            <div className="glass-card p-8 rounded-xl hover:shadow-lg hover:shadow-crypto-cyan/10 transition-all duration-300">
+              <h3 className="text-2xl font-semibold text-crypto-white mb-4">Enterprise</h3>
+              <div className="text-crypto-cyan text-4xl font-bold mb-6">Custom</div>
+              <p className="text-crypto-gray-light mb-6 leading-relaxed">
+                Tailored solutions for high-volume businesses
+              </p>
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-center text-crypto-gray-light">
+                  <CheckCircle className="h-5 w-5 text-crypto-cyan mr-2" />
+                  Volume discounts
+                </li>
+                <li className="flex items-center text-crypto-gray-light">
+                  <CheckCircle className="h-5 w-5 text-crypto-cyan mr-2" />
+                  Dedicated account manager
+                </li>
+                <li className="flex items-center text-crypto-gray-light">
+                  <CheckCircle className="h-5 w-5 text-crypto-cyan mr-2" />
+                  Custom integrations
+                </li>
+              </ul>
+              <Link 
+                href="/contact" 
+                className="w-full border border-crypto-cyan text-crypto-cyan px-6 py-3 rounded-md font-medium hover:bg-crypto-cyan/10 transition-all duration-200 text-center block"
+              >
+                Contact Sales
+              </Link>
+            </div>
+          </div>
+          
+          {/* Pricing Comparison Table */}
+          <div className="mt-20">
+            <h3 className="text-2xl font-semibold text-crypto-white text-center mb-8">Feature Comparison</h3>
+            
+            <div className="overflow-x-auto">
+              <div className="glass-card rounded-xl p-6">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-white/10">
+                      <th className="text-left py-4 px-4 text-crypto-gray-light">Features</th>
+                      <th className="text-center py-4 px-4 text-crypto-white">Standard</th>
+                      <th className="text-center py-4 px-4 text-crypto-cyan">Launch Offer</th>
+                      <th className="text-center py-4 px-4 text-crypto-white">Enterprise</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b border-white/10">
+                      <td className="py-4 px-4 text-crypto-gray-light">Transaction Fee</td>
+                      <td className="text-center py-4 px-4 text-crypto-white">0.5%</td>
+                      <td className="text-center py-4 px-4 text-crypto-cyan font-medium">0.25%</td>
+                      <td className="text-center py-4 px-4 text-crypto-white">Custom</td>
+                    </tr>
+                    <tr className="border-b border-white/10">
+                      <td className="py-4 px-4 text-crypto-gray-light">Supported Cryptocurrencies</td>
+                      <td className="text-center py-4 px-4 text-crypto-white">10+</td>
+                      <td className="text-center py-4 px-4 text-crypto-cyan font-medium">10+</td>
+                      <td className="text-center py-4 px-4 text-crypto-white">All Available</td>
+                    </tr>
+                    <tr className="border-b border-white/10">
+                      <td className="py-4 px-4 text-crypto-gray-light">Settlement Time</td>
+                      <td className="text-center py-4 px-4 text-crypto-white">24 hours</td>
+                      <td className="text-center py-4 px-4 text-crypto-cyan font-medium">12 hours</td>
+                      <td className="text-center py-4 px-4 text-crypto-white">Custom</td>
+                    </tr>
+                    <tr className="border-b border-white/10">
+                      <td className="py-4 px-4 text-crypto-gray-light">API Access</td>
+                      <td className="text-center py-4 px-4 text-crypto-white">
+                        <CheckCircle className="h-5 w-5 text-crypto-cyan mx-auto" />
+                      </td>
+                      <td className="text-center py-4 px-4 text-crypto-cyan">
+                        <CheckCircle className="h-5 w-5 text-crypto-cyan mx-auto" />
+                      </td>
+                      <td className="text-center py-4 px-4 text-crypto-white">
+                        <CheckCircle className="h-5 w-5 text-crypto-cyan mx-auto" />
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/10">
+                      <td className="py-4 px-4 text-crypto-gray-light">Webhook Notifications</td>
+                      <td className="text-center py-4 px-4 text-crypto-white">
+                        <CheckCircle className="h-5 w-5 text-crypto-cyan mx-auto" />
+                      </td>
+                      <td className="text-center py-4 px-4 text-crypto-cyan">
+                        <CheckCircle className="h-5 w-5 text-crypto-cyan mx-auto" />
+                      </td>
+                      <td className="text-center py-4 px-4 text-crypto-white">
+                        <CheckCircle className="h-5 w-5 text-crypto-cyan mx-auto" />
+                      </td>
+                    </tr>
+                    <tr className="border-b border-white/10">
+                      <td className="py-4 px-4 text-crypto-gray-light">Transaction Analytics</td>
+                      <td className="text-center py-4 px-4 text-crypto-white">Basic</td>
+                      <td className="text-center py-4 px-4 text-crypto-cyan font-medium">Advanced</td>
+                      <td className="text-center py-4 px-4 text-crypto-white">Custom</td>
+                    </tr>
+                    <tr className="border-b border-white/10">
+                      <td className="py-4 px-4 text-crypto-gray-light">Support</td>
+                      <td className="text-center py-4 px-4 text-crypto-white">Email</td>
+                      <td className="text-center py-4 px-4 text-crypto-cyan font-medium">Priority Email</td>
+                      <td className="text-center py-4 px-4 text-crypto-white">Dedicated Manager</td>
+                    </tr>
+                    <tr>
+                      <td className="py-4 px-4 text-crypto-gray-light">Custom Integrations</td>
+                      <td className="text-center py-4 px-4 text-crypto-white">—</td>
+                      <td className="text-center py-4 px-4 text-crypto-cyan">—</td>
+                      <td className="text-center py-4 px-4 text-crypto-white">
+                        <CheckCircle className="h-5 w-5 text-crypto-cyan mx-auto" />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -254,7 +431,7 @@ export default function Home() {
               <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 w-10 h-10 rounded-full bg-crypto-cyan text-crypto-blue-dark flex items-center justify-center font-bold text-lg">1</div>
               <div className="text-center pt-4">
                 <div className="w-20 h-20 bg-crypto-cyan/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="h-10 w-10 text-crypto-cyan">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-10 w-10 text-crypto-cyan">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
                 </div>
@@ -269,7 +446,7 @@ export default function Home() {
               <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 w-10 h-10 rounded-full bg-crypto-cyan text-crypto-blue-dark flex items-center justify-center font-bold text-lg">2</div>
               <div className="text-center pt-4">
                 <div className="w-20 h-20 bg-crypto-cyan/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="h-10 w-10 text-crypto-cyan">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-10 w-10 text-crypto-cyan">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                   </svg>
                 </div>
@@ -284,7 +461,7 @@ export default function Home() {
               <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 w-10 h-10 rounded-full bg-crypto-cyan text-crypto-blue-dark flex items-center justify-center font-bold text-lg">3</div>
               <div className="text-center pt-4">
                 <div className="w-20 h-20 bg-crypto-cyan/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="h-10 w-10 text-crypto-cyan">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-10 w-10 text-crypto-cyan">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
@@ -545,7 +722,7 @@ export default function Home() {
           
           <div className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center">
             <div className="text-crypto-gray-light mb-4 md:mb-0">
-              © 2025 CryptoFlow. All rights reserved.
+              &copy; 2025 CryptoFlow. All rights reserved.
             </div>
             <div className="flex items-center space-x-2">
               <div className="flex items-center bg-white/10 rounded-md px-3 py-1">

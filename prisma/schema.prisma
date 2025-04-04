@@ -4,6 +4,18 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+enum KYCStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -54,18 +66,4 @@ model Transaction {
   @@index([merchantId])
   @@index([userId])
   @@index([status])
-}
-
-enum KYCStatus {
-  PENDING
-  IN_PROGRESS
-  APPROVED
-  REJECTED
-}
-
-enum TransactionStatus {
-  PENDING
-  PROCESSING
-  COMPLETED
-  FAILED
 }

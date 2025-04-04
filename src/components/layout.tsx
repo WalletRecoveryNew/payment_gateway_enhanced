@@ -1,6 +1,11 @@
-import ResponsiveTest from '../components/responsive-test';
+import type { ReactNode } from 'react';
+import dynamic from 'next/dynamic';
 
-export function Layout({ children }) {
+const ResponsiveTest = dynamic(() => import('./responsive-test'), {
+  ssr: false
+});
+
+export function Layout({ children }: { children: ReactNode }) {
   return (
     <>
       {children}

@@ -1,6 +1,6 @@
 'use client'
 
-import { Shield, ArrowLeft, Bitcoin, Ethereum, CreditCard, DollarSign } from 'lucide-react'
+import { Shield, ArrowLeft, Bitcoin, CreditCard, DollarSign } from 'lucide-react'
 import Link from 'next/link'
 import { PaymentForm } from '@/components/payment/payment-form'
 import '../design-system.css'
@@ -49,70 +49,18 @@ export default function PaymentPage() {
               
               <div className="space-y-4 pl-10">
                 <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg transform transition-all duration-300 hover:translate-x-2">
-                  <div className="w-8 h-8 rounded-full bg-crypto-cyan/20 flex items-center justify-center text-crypto-cyan">1</div>
-                  <p className="text-crypto-white">
-                    Connect your wallet by clicking the "Connect Wallet" button
-                  </p>
+                  <Bitcoin className="h-5 w-5 text-amber-500" />
+                  <span className="text-crypto-gray-light">Bitcoin (BTC)</span>
                 </div>
-                
                 <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg transform transition-all duration-300 hover:translate-x-2">
-                  <div className="w-8 h-8 rounded-full bg-crypto-cyan/20 flex items-center justify-center text-crypto-cyan">2</div>
-                  <p className="text-crypto-white">
-                    Enter the payment amount and select your preferred cryptocurrency
-                  </p>
+                  <CreditCard className="h-5 w-5 text-indigo-400" />
+                  <span className="text-crypto-gray-light">Credit Card</span>
                 </div>
-                
                 <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg transform transition-all duration-300 hover:translate-x-2">
-                  <div className="w-8 h-8 rounded-full bg-crypto-cyan/20 flex items-center justify-center text-crypto-cyan">3</div>
-                  <p className="text-crypto-white">
-                    Choose the blockchain network you want to use for the payment
-                  </p>
-                </div>
-                
-                <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg transform transition-all duration-300 hover:translate-x-2">
-                  <div className="w-8 h-8 rounded-full bg-crypto-cyan/20 flex items-center justify-center text-crypto-cyan">4</div>
-                  <p className="text-crypto-white">
-                    Click "Pay Now" and confirm the transaction in your wallet
-                  </p>
+                  <DollarSign className="h-5 w-5 text-green-400" />
+                  <span className="text-crypto-gray-light">USDT/USDC</span>
                 </div>
               </div>
-
-              <div className="mt-8 pt-6 border-t border-white/10">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                  <div className="text-sm text-crypto-gray-light flex items-center">
-                    <Shield className="h-4 w-4 mr-2 text-crypto-cyan" />
-                    Secured by CryptoFlow Enterprise Security
-                  </div>
-                  <div className="flex gap-3">
-                    <div className="flex items-center gap-1 text-xs text-crypto-gray-light">
-                      <Bitcoin className="h-4 w-4 text-amber-500" />
-                      BTC
-                    </div>
-                    <div className="flex items-center gap-1 text-xs text-crypto-gray-light">
-                      <Ethereum className="h-4 w-4 text-indigo-400" />
-                      ETH
-                    </div>
-                    <div className="flex items-center gap-1 text-xs text-crypto-gray-light">
-                      <DollarSign className="h-4 w-4 text-green-400" />
-                      USDT
-                    </div>
-                    <div className="flex items-center gap-1 text-xs text-crypto-gray-light">
-                      <DollarSign className="h-4 w-4 text-blue-400" />
-                      USDC
-                    </div>
-                    <div className="flex items-center gap-1 text-xs text-crypto-gray-light">
-                      <CreditCard className="h-4 w-4 text-purple-400" />
-                      SOL
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-8 text-center">
-              <p className="text-crypto-gray-light text-sm">
-                Need help with your payment? <a href="/support" className="text-crypto-cyan hover:underline">Contact Support</a>
-              </p>
             </div>
           </div>
         </div>
@@ -122,7 +70,7 @@ export default function PaymentPage() {
       <footer className="border-t border-white/10 py-8 bg-crypto-blue-dark/50 backdrop-blur-md">
         <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
           <div className="text-crypto-gray-light text-sm mb-4 md:mb-0">
-            © 2025 CryptoFlow. All rights reserved.
+            2025 CryptoFlow. All rights reserved.
           </div>
           <div className="flex gap-8">
             <Link href="/privacy" className="text-crypto-gray-light hover:text-crypto-white text-sm transition-colors duration-200">

@@ -288,7 +288,101 @@ app.post('/webhooks/crypto', (req, res) => {
 });
 ```
 
+## JavaScript SDK and Payment Button Integration
+
+### Overview
+
+CryptoFlow provides a JavaScript SDK and a payment button for easy integration with your website or application.
+
+### JavaScript SDK
+
+Our JavaScript SDK allows you to create payments, display a payment modal, and handle payment events.
+
+#### Installation
+
+Add the SDK to your website:
+
+```html
+<script src="https://cdn.cryptoflow.com/js/cryptoflow-sdk.js"></script>
+```
+
+Or install via npm:
+
+```bash
+npm install cryptoflow-sdk
+```
+
+#### Basic Usage
+
+```javascript
+// Initialize the SDK with your API key
+const cryptoflow = new CryptoFlow('YOUR_API_KEY');
+
+// Create a payment
+async function createPayment() {
+  try {
+    const payment = await cryptoflow.createPayment({
+      amount: '0.1',
+      currency: 'ETH',
+      chainId: 1,
+      description: 'Payment for services'
+    });
+    
+    // Open the payment modal
+    cryptoflow.openPaymentModal(payment.id);
+    
+    // Listen for payment events
+    cryptoflow.on('payment.completed', (payment) => {
+      console.log('Payment completed:', payment);
+    });
+  } catch (error) {
+    console.error('Payment error:', error);
+  }
+}
+```
+
+### Payment Button
+
+For an even simpler integration, you can use our payment button, which requires minimal code.
+
+#### Basic Implementation
+
+```html
+<!-- Add the payment button script to your website -->
+<script src="https://cdn.cryptoflow.com/js/payment-button.js"></script>
+
+<!-- Add a payment button container with your configuration -->
+<div id="crypto-payment-button" 
+     data-api-key="YOUR_API_KEY"
+     data-amount="0.05" 
+     data-currency="ETH" 
+     data-chain-id="1"
+     data-description="Payment for services">
+</div>
+```
+
+#### Customization
+
+The payment button can be customized using data attributes:
+
+```html
+<div id="crypto-payment-button" 
+     data-api-key="YOUR_API_KEY"
+     data-amount="100" 
+     data-currency="USDT" 
+     data-chain-id="56"
+     data-description="Premium subscription"
+     data-button-text="Pay $100 USDT"
+     data-button-theme="crypto"
+     data-button-size="large"
+     data-redirect-url="https://example.com/success"
+     data-cancel-url="https://example.com/cancel">
+</div>
+```
+
 ## Frontend Integration
+
+CryptoFlow provides multiple options for integrating payments into your website or application.
 
 ### Payment Button
 

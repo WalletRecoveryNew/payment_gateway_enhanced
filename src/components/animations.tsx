@@ -6,77 +6,84 @@ import '../app/design-system.css'
 // Animation utilities for interactive elements
 export function useAnimations() {
   // Reference to animation elements
-  const floatingElements = useRef([])
-  const pulsingElements = useRef([])
-  const typingElements = useRef([])
+  const floatingElements = useRef<HTMLElement[]>([]);
+  const pulsingElements = useRef<HTMLElement[]>([]);
+  const typingElements = useRef<HTMLElement[]>([]);
   
   useEffect(() => {
     // Initialize floating animations
     const initFloatingAnimation = () => {
-      document.querySelectorAll('.animate-float').forEach((el, index) => {
-        floatingElements.current.push(el)
-        
-        // Add random delay to create natural movement
-        const delay = Math.random() * 2
-        el.style.animationDelay = `${delay}s`
+      document.querySelectorAll('.animate-float').forEach((el) => {
+        if (el instanceof HTMLElement) {
+          floatingElements.current.push(el)
+          
+          // Add random delay to create natural movement
+          const delay = Math.random() * 2;
+          el.style.animationDelay = `${delay}s`;
+        }
       })
     }
     
     // Initialize pulsing animations
     const initPulsingAnimation = () => {
-      document.querySelectorAll('.animate-pulse-glow').forEach((el, index) => {
-        pulsingElements.current.push(el)
-        
-        // Add random delay to create natural effect
-        const delay = Math.random() * 3
-        el.style.animationDelay = `${delay}s`
+      document.querySelectorAll('.animate-pulse-glow').forEach((el) => {
+        if (el instanceof HTMLElement) {
+          pulsingElements.current.push(el)
+          
+          // Add random delay to create natural effect
+          const delay = Math.random() * 3;
+          el.style.animationDelay = `${delay}s`;
+        }
       })
     }
     
     // Initialize typing animations
     const initTypingAnimation = () => {
       document.querySelectorAll('.animate-typing').forEach((el) => {
-        typingElements.current.push(el)
-        
-        const text = el.getAttribute('data-text')
-        if (text) {
-          el.textContent = ''
-          let i = 0
-          const speed = parseInt(el.getAttribute('data-speed') || '100')
+        if (el instanceof HTMLElement) {
+          typingElements.current.push(el)
           
-          function typeWriter() {
-            if (i < text.length) {
-              el.textContent += text.charAt(i)
-              i++
-              setTimeout(typeWriter, speed)
-            }
+          const text = el.getAttribute('data-text');
+          if (text) {
+            el.textContent = '';
+            let i = 0;
+            const speed = parseInt(el.getAttribute('data-speed') || '100', 10);
+            
+            // Define typeWriter function outside the block
+            const typeWriter = () => {
+              if (i < (text?.length ?? 0)) {
+                el.textContent += text?.charAt(i);
+                i++;
+                setTimeout(typeWriter, speed);
+              }
+            };
+            
+            // Start typing with a small delay
+            setTimeout(typeWriter, 500);
           }
-          
-          // Start typing with a small delay
-          setTimeout(typeWriter, 500)
         }
       })
     }
     
     // Initialize all animations
-    initFloatingAnimation()
-    initPulsingAnimation()
-    initTypingAnimation()
+    initFloatingAnimation();
+    initPulsingAnimation();
+    initTypingAnimation();
     
     // Cleanup function
     return () => {
-      floatingElements.current = []
-      pulsingElements.current = []
-      typingElements.current = []
+      floatingElements.current = [];
+      pulsingElements.current = [];
+      typingElements.current = [];
     }
   }, [])
   
-  return null
+  return null;
 }
 
 // Hover effect component
-export function HoverEffect({ children, className = '', effectType = 'glow' }) {
-  const effectClasses = {
+export function HoverEffect({ children, className = '', effectType = 'glow' }: { children: React.ReactNode, className?: string, effectType?: 'glow' | 'scale' | 'slide' | 'bounce' }) {
+  const effectClasses: Record<'glow' | 'scale' | 'slide' | 'bounce', string> = {
     glow: 'hover:shadow-lg hover:shadow-crypto-cyan/10 transition-all duration-300',
     scale: 'transition-transform duration-300 hover:scale-105',
     slide: 'transition-transform duration-300 hover:translate-x-2',
@@ -93,29 +100,29 @@ export function HoverEffect({ children, className = '', effectType = 'glow' }) {
 }
 
 // Parallax scroll effect
-export function ParallaxSection({ children, speed = 0.5, className = '' }) {
-  const sectionRef = useRef(null)
+export function ParallaxSection({ children, speed = 0.5, className = '' }: { children: React.ReactNode, speed?: number, className?: string }) {
+  const sectionRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    const section = sectionRef.current
-    if (!section) return
+    const section = sectionRef.current;
+    if (!section) return;
     
     const handleScroll = () => {
-      const scrollY = window.scrollY
-      const sectionTop = section.offsetTop
-      const sectionHeight = section.offsetHeight
+      const scrollY = window.scrollY;
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.offsetHeight;
       
       // Only apply parallax when section is in view
       if (scrollY > sectionTop - window.innerHeight && scrollY < sectionTop + sectionHeight) {
-        const yPos = (scrollY - sectionTop) * speed
-        section.style.backgroundPositionY = `${yPos}px`
+        const yPos = (scrollY - sectionTop) * speed;
+        section.style.backgroundPositionY = `${yPos}px`;
       }
     }
     
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll);
     
     return () => {
-      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('scroll', handleScroll);
     }
   }, [speed])
   
@@ -127,24 +134,24 @@ export function ParallaxSection({ children, speed = 0.5, className = '' }) {
 }
 
 // Animated counter
-export function AnimatedCounter({ value, duration = 2000, className = '' }) {
-  const counterRef = useRef(null)
+export function AnimatedCounter({ value, duration = 2000, className = '' }: { value: number, duration?: number, className?: string }) {
+  const counterRef = useRef<HTMLSpanElement>(null);
   
   useEffect(() => {
-    const counter = counterRef.current
-    if (!counter) return
+    const counter = counterRef.current;
+    if (!counter) return;
     
-    let startValue = 0
-    const endValue = parseInt(value)
-    const increment = endValue / (duration / 16)
+    let startValue = 0;
+    const endValue = parseInt(value.toString());
+    const increment = endValue / (duration / 16);
     
     const updateCounter = () => {
       if (startValue < endValue) {
-        startValue += increment
-        counter.textContent = Math.floor(startValue).toLocaleString()
-        requestAnimationFrame(updateCounter)
+        startValue += increment;
+        counter.textContent = Math.floor(startValue).toLocaleString();
+        requestAnimationFrame(updateCounter);
       } else {
-        counter.textContent = endValue.toLocaleString()
+        counter.textContent = endValue.toLocaleString();
       }
     }
     
@@ -152,16 +159,16 @@ export function AnimatedCounter({ value, duration = 2000, className = '' }) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          updateCounter()
-          observer.unobserve(entry.target)
+          updateCounter();
+          observer.unobserve(entry.target);
         }
       })
     }, { threshold: 0.5 })
     
-    observer.observe(counter)
+    observer.observe(counter);
     
     return () => {
-      observer.disconnect()
+      observer.disconnect();
     }
   }, [value, duration])
   
@@ -169,7 +176,7 @@ export function AnimatedCounter({ value, duration = 2000, className = '' }) {
 }
 
 // Animated gradient background
-export function AnimatedGradient({ children, className = '' }) {
+export function AnimatedGradient({ children, className = '' }: { children: React.ReactNode, className?: string }) {
   return (
     <div className={`relative overflow-hidden ${className}`}>
       <div className="absolute inset-0 bg-gradient-to-r from-crypto-blue-dark via-crypto-blue to-crypto-blue-dark bg-[length:200%_100%] animate-gradient"></div>
@@ -179,44 +186,47 @@ export function AnimatedGradient({ children, className = '' }) {
 }
 
 // Typing animation
-export function TypingText({ text, speed = 100, className = '' }) {
+export function TypingText({ text, speed = 100, className = '' }: { text: string, speed?: number, className?: string }) {
   return (
     <span className={`animate-typing ${className}`} data-text={text} data-speed={speed}></span>
   )
 }
 
 // Scroll reveal animation
-export function ScrollReveal({ children, className = '', direction = 'up' }) {
-  const revealRef = useRef(null)
+export function ScrollReveal({ children, className = '', direction = 'up' }: { children: React.ReactNode, className?: string, direction?: 'up' | 'down' | 'left' | 'right' }) {
+  const revealRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    const reveal = revealRef.current
-    if (!reveal) return
+    const reveal = revealRef.current;
+    if (!reveal) return;
     
-    const directionClass = {
+    const directions = {
       up: 'translate-y-10',
       down: '-translate-y-10',
       left: 'translate-x-10',
       right: '-translate-x-10',
-    }[direction] || 'translate-y-10'
+    };
+    
+    // Get the appropriate class based on direction or default to up
+    const directionClass = directions[direction as keyof typeof directions] || directions.up;
     
     // Add initial styles
-    reveal.classList.add('opacity-0', directionClass, 'transition-all', 'duration-700')
+    reveal.classList.add('opacity-0', directionClass, 'transition-all', 'duration-700');
     
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           // Remove transform and show element
-          reveal.classList.remove('opacity-0', directionClass)
-          observer.unobserve(entry.target)
+          reveal.classList.remove('opacity-0', directionClass);
+          observer.unobserve(entry.target);
         }
       })
     }, { threshold: 0.1 })
     
-    observer.observe(reveal)
+    observer.observe(reveal);
     
     return () => {
-      observer.disconnect()
+      observer.disconnect();
     }
   }, [direction])
   

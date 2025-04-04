@@ -12,12 +12,12 @@ export async function GET() {
       timestamp: new Date().toISOString(),
       dbResult: result
     })
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Database connection error:', error)
     return NextResponse.json({
       status: 'unhealthy',
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 })
   }
-} 
+}

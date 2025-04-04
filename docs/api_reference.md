@@ -29,6 +29,23 @@ You can generate API keys in the CryptoFlow dashboard under API Keys section.
 - **Production Keys**: Used for live transactions (prefix: `pk_live_`)
 - **Test Keys**: Used for testing and development (prefix: `pk_test_`)
 
+### Test Environment
+
+For development and testing, use test API keys and test networks:
+
+**Test API Keys:**
+- `pk_test_readonly_5f9d94b1c7613`: Read-only access to test data
+- `pk_test_full_7e3a21d8f5b92`: Full access to test data
+- `pk_test_webhook_3c6f8a2d1e7b9`: Configured for webhook testing
+
+**Test Networks:**
+- Ethereum Sepolia (Chain ID: 11155111)
+- BSC Testnet (Chain ID: 97)
+- Polygon Mumbai (Chain ID: 80001)
+- Solana Devnet (Chain ID: 502)
+
+For more details, see the [Test Environment Guide](./test_environment.md).
+
 ## Payments API
 
 ### Create Payment
@@ -429,6 +446,95 @@ function verifyWebhook(payload, signature, timestamp, secret) {
   );
 }
 ```
+
+## JavaScript SDK
+
+The CryptoFlow JavaScript SDK allows you to integrate cryptocurrency payments into your website or application.
+
+### Installation
+
+```html
+<script src="https://cdn.cryptoflow.com/js/cryptoflow-sdk.js"></script>
+```
+
+Or install via npm:
+
+```bash
+npm install cryptoflow-sdk
+```
+
+### Basic Usage
+
+```javascript
+// Initialize the SDK with your API key
+const cryptoflow = new CryptoFlow('YOUR_API_KEY');
+
+// Create a payment
+const payment = await cryptoflow.createPayment({
+  amount: '0.1',
+  currency: 'ETH',
+  chainId: 1,
+  description: 'Payment for services'
+});
+
+// Open the payment modal
+cryptoflow.openPaymentModal(payment.id);
+
+// Listen for payment events
+cryptoflow.on('payment.completed', (payment) => {
+  console.log('Payment completed:', payment);
+});
+```
+
+### SDK Methods
+
+| Method | Description |
+|--------|-------------|
+| `createPayment(data)` | Creates a new payment |
+| `getPayment(id)` | Retrieves payment details |
+| `openPaymentModal(id)` | Opens the payment modal |
+| `closePaymentModal()` | Closes the payment modal |
+| `on(event, callback)` | Adds an event listener |
+| `off(event, callback)` | Removes an event listener |
+
+For more details, see the [Frontend Integration Guide](./frontend_integration.md).
+
+## Payment Button
+
+The CryptoFlow Payment Button provides a simple way to add cryptocurrency payments to your website.
+
+### Basic Implementation
+
+```html
+<!-- Add the payment button script -->
+<script src="https://cdn.cryptoflow.com/js/payment-button.js"></script>
+
+<!-- Add a payment button container -->
+<div id="crypto-payment-button" 
+     data-api-key="YOUR_API_KEY"
+     data-amount="0.05" 
+     data-currency="ETH" 
+     data-chain-id="1"
+     data-description="Payment for services">
+</div>
+```
+
+### Data Attributes
+
+| Attribute | Description | Required | Default |
+|-----------|-------------|----------|---------|
+| data-api-key | Your CryptoFlow API key | Yes | - |
+| data-amount | Payment amount | Yes | - |
+| data-currency | Payment currency | Yes | - |
+| data-chain-id | Blockchain network ID | No | 1 (Ethereum) |
+| data-description | Payment description | No | - |
+| data-button-text | Button text | No | Pay with Crypto |
+| data-button-theme | Button theme | No | light |
+| data-button-size | Button size | No | medium |
+| data-redirect-url | Success redirect URL | No | - |
+| data-cancel-url | Cancel redirect URL | No | - |
+
+For more details, see the [Frontend Integration Guide](./frontend_integration.md).
 
 ## Error Handling
 

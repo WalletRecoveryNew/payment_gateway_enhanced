@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CryptoFlow Payment Button Demo</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    h1 {
+      color: #7b3fe4;
+      margin-bottom: 30px;
+    }
+    
+    .demo-section {
+      margin-bottom: 40px;
+      padding: 20px;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    h2 {
+      color: #5a2da0;
+      margin-top: 0;
+    }
+    
+    pre {
+      background-color: #f1f1f1;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    
+    code {
+      font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    }
+    
+    .button-container {
+      margin: 20px 0;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    th {
+      background-color: #f5f5f5;
+    }
+  </style>
+</head>
+<body>
+  <h1>CryptoFlow Payment Button Demo</h1>
+  
+  <div class="demo-section">
+    <h2>Basic Payment Button</h2>
+    <p>This is the simplest implementation of the payment button:</p>
+    
+    <pre><code>&lt;script src="https://cdn.cryptoflow.com/js/payment-button.js"&gt;&lt;/script&gt;
+&lt;div id="crypto-payment-button" 
+     data-api-key="YOUR_API_KEY"
+     data-amount="0.05" 
+     data-currency="ETH" 
+     data-chain-id="1"
+     data-description="Payment for services"&gt;
+&lt;/div&gt;</code></pre>
+    
+    <div class="button-container">
+      <div id="crypto-payment-button" 
+           data-api-key="pk_test_demo123456789"
+           data-amount="0.05" 
+           data-currency="ETH" 
+           data-chain-id="1"
+           data-description="Payment for services">
+      </div>
+    </div>
+  </div>
+  
+  <div class="demo-section">
+    <h2>Customized Payment Button</h2>
+    <p>You can customize the button appearance:</p>
+    
+    <pre><code>&lt;div id="crypto-payment-button-custom" 
+     data-api-key="YOUR_API_KEY"
+     data-amount="100" 
+     data-currency="USDT" 
+     data-chain-id="56"
+     data-description="Premium subscription"
+     data-button-text="Pay $100 USDT"
+     data-button-theme="crypto"
+     data-button-size="large"&gt;
+&lt;/div&gt;</code></pre>
+    
+    <div class="button-container">
+      <div id="crypto-payment-button-custom" 
+           data-api-key="pk_test_demo123456789"
+           data-amount="100" 
+           data-currency="USDT" 
+           data-chain-id="56"
+           data-description="Premium subscription"
+           data-button-text="Pay $100 USDT"
+           data-button-theme="crypto"
+           data-button-size="large">
+      </div>
+    </div>
+  </div>
+  
+  <div class="demo-section">
+    <h2>Button with Redirect URLs</h2>
+    <p>You can specify URLs to redirect to after payment completion or cancellation:</p>
+    
+    <pre><code>&lt;div id="crypto-payment-button-redirect" 
+     data-api-key="YOUR_API_KEY"
+     data-amount="0.01" 
+     data-currency="SOL" 
+     data-chain-id="501"
+     data-description="Basic package"
+     data-button-text="Pay with Solana"
+     data-button-theme="blue"
+     data-redirect-url="https://example.com/success"
+     data-cancel-url="https://example.com/cancel"&gt;
+&lt;/div&gt;</code></pre>
+    
+    <div class="button-container">
+      <div id="crypto-payment-button-redirect" 
+           data-api-key="pk_test_demo123456789"
+           data-amount="0.01" 
+           data-currency="SOL" 
+           data-chain-id="501"
+           data-description="Basic package"
+           data-button-text="Pay with Solana"
+           data-button-theme="blue"
+           data-redirect-url="https://example.com/success"
+           data-cancel-url="https://example.com/cancel">
+      </div>
+    </div>
+  </div>
+  
+  <div class="demo-section">
+    <h2>Available Options</h2>
+    
+    <h3>Data Attributes</h3>
+    <table>
+      <tr>
+        <th>Attribute</th>
+        <th>Description</th>
+        <th>Required</th>
+        <th>Default</th>
+      </tr>
+      <tr>
+        <td>data-api-key</td>
+        <td>Your CryptoFlow API key</td>
+        <td>Yes</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>data-amount</td>
+        <td>Payment amount</td>
+        <td>Yes</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>data-currency</td>
+        <td>Payment currency (ETH, BTC, USDT, USDC, SOL)</td>
+        <td>Yes</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>data-chain-id</td>
+        <td>Blockchain network ID</td>
+        <td>No</td>
+        <td>1 (Ethereum)</td>
+      </tr>
+      <tr>
+        <td>data-description</td>
+        <td>Payment description</td>
+        <td>No</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>data-button-text</td>
+        <td>Text to display on the button</td>
+        <td>No</td>
+        <td>Pay with Crypto</td>
+      </tr>
+      <tr>
+        <td>data-button-theme</td>
+        <td>Button theme (light, dark, blue, crypto)</td>
+        <td>No</td>
+        <td>light</td>
+      </tr>
+      <tr>
+        <td>data-button-size</td>
+        <td>Button size (small, medium, large)</td>
+        <td>No</td>
+        <td>medium</td>
+      </tr>
+      <tr>
+        <td>data-redirect-url</td>
+        <td>URL to redirect to after successful payment</td>
+        <td>No</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>data-cancel-url</td>
+        <td>URL to redirect to after cancelled payment</td>
+        <td>No</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>data-debug</td>
+        <td>Enable debug logging (true, false)</td>
+        <td>No</td>
+        <td>false</td>
+      </tr>
+    </table>
+    
+    <h3>Button Themes</h3>
+    <div class="button-container">
+      <div id="theme-light" 
+           data-api-key="pk_test_demo123456789"
+           data-amount="0.05" 
+           data-currency="ETH"
+           data-button-text="Light Theme"
+           data-button-theme="light">
+      </div>
+      <div id="theme-dark" 
+           data-api-key="pk_test_demo123456789"
+           data-amount="0.05" 
+           data-currency="ETH"
+           data-button-text="Dark Theme"
+           data-button-theme="dark">
+      </div>
+      <div id="theme-blue" 
+           data-api-key="pk_test_demo123456789"
+           data-amount="0.05" 
+           data-currency="ETH"
+           data-button-text="Blue Theme"
+           data-button-theme="blue">
+      </div>
+      <div id="theme-crypto" 
+           data-api-key="pk_test_demo123456789"
+           data-amount="0.05" 
+           data-currency="ETH"
+           data-button-text="Crypto Theme"
+           data-button-theme="crypto">
+      </div>
+    </div>
+  </div>
+  
+  <div class="demo-section">
+    <h2>Advanced Integration with JavaScript SDK</h2>
+    <p>For more control, you can use our JavaScript SDK directly:</p>
+    
+    <pre><code>&lt;script src="https://cdn.cryptoflow.com/js/cryptoflow-sdk.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  // Initialize the SDK
+  const cryptoflow = new CryptoFlow('YOUR_API_KEY');
+
+  // Create a payment
+  async function createPayment() {
+    try {
+      const payment = await cryptoflow.createPayment({
+        amount: '0.1',
+        currency: 'ETH',
+        chainId: 1,
+        description: 'Payment for services'
+      });
+      
+      // Open the payment modal
+      cryptoflow.openPaymentModal(payment.id);
+      
+      // Listen for payment events
+      cryptoflow.on('payment.completed', (payment) => {
+        console.log('Payment completed:', payment);
+      });
+    } catch (error) {
+      console.error('Payment error:', error);
+    }
+  }
+&lt;/script&gt;
+
+&lt;button onclick="createPayment()"&gt;Custom Payment Button&lt;/button&gt;</code></pre>
+  </div>
+  
+  <!-- Load the payment button script -->
+  <script src="js/cryptoflow-sdk.js"></script>
+  <script src="js/payment-button.js"></script>
+</body>
+</html>

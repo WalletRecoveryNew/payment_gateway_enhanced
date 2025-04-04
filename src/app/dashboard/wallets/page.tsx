@@ -87,7 +87,7 @@ export default function WalletsPage() {
         id: `${wallets.length + 1}`,
         name: newWalletName,
         address: isSolana ? solanaAddress || '' : address || '',
-        chain: isSolana ? 'Solana' : chainId ? chainNameMap[chainId] : 'Unknown',
+        chain: isSolana ? 'Solana' : chainId ? (chainNameMap[chainId] as string) : 'Unknown',
         chainId: isSolana ? 501 : chainId || 1,
         balance: '0.00',
         currency: isSolana ? 'SOL' : 'ETH',

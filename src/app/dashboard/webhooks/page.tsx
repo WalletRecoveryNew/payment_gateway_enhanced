@@ -8,7 +8,7 @@ export default function WebhooksPage() {
   const [webhookKey, setWebhookKey] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
-  const [events, setEvents] = useState<string[]>([
+  const [events] = useState<string[]>([
     'payment.created',
     'payment.completed',
     'payment.failed'

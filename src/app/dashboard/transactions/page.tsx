@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Loader2, ExternalLink, Download, Filter } from 'lucide-react'
+import { ExternalLink, Download, Filter } from 'lucide-react'
 import { chainNameMap, getExplorerTxUrl } from '@/lib/config/chains'
 
 type Transaction = {

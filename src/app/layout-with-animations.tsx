@@ -1,12 +1,12 @@
 'use client'
 
 import { useEffect } from 'react'
-import { Animations, ScrollReveal, AnimatedCounter, HoverEffect } from '@/components/animations'
+import { Animations } from '@/components/animations'
 import '../design-system.css'
 import '../animations.css'
 import '../mobile-optimizations.css'
 
-export default function RootLayout({ children }) {
+export default function LayoutWithAnimations({ children }: { children: React.ReactNode }) {
   // Apply animations and interactive elements globally
   useEffect(() => {
     // Initialize scroll reveal animations

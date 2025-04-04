@@ -1,29 +1,98 @@
-.cta-button {
-  @apply bg-crypto-cyan text-crypto-blue-dark px-8 py-4 rounded-md font-medium hover:bg-crypto-cyan/90 transition-all duration-200 shadow-lg shadow-crypto-cyan/20 text-lg transform hover:scale-105;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-.secondary-button {
-  @apply border border-white/20 text-crypto-white px-8 py-4 rounded-md font-medium hover:bg-white/5 transition-all duration-200 text-lg transform hover:translate-x-1;
-}
+@layer components {
+  .cta-button {
+    @apply bg-crypto-cyan text-crypto-blue-dark px-8 py-4 rounded-md font-medium hover:bg-crypto-cyan/90 transition-all duration-200 shadow-lg shadow-crypto-cyan/20 text-lg transform hover:scale-105;
+  }
 
-.nav-link {
-  @apply text-crypto-gray-light hover:text-crypto-cyan transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-crypto-cyan after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300;
-}
+  .secondary-button {
+    @apply border border-white/20 text-crypto-white px-8 py-4 rounded-md font-medium hover:bg-white/5 transition-all duration-200 text-lg transform hover:translate-x-1;
+  }
 
-.feature-card {
-  @apply glass-card p-8 rounded-xl hover:shadow-lg hover:shadow-crypto-cyan/10 transition-all duration-300 group transform hover:-translate-y-1;
-}
+  .nav-link {
+    @apply text-crypto-gray-light hover:text-crypto-cyan transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-crypto-cyan after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300;
+  }
 
-.testimonial-card {
-  @apply glass-card p-8 rounded-xl hover:shadow-lg hover:shadow-crypto-cyan/10 transition-all duration-300 transform hover:scale-[1.02];
-}
+  .feature-card {
+    @apply glass-card p-8 rounded-xl hover:shadow-lg hover:shadow-crypto-cyan/10 transition-all duration-300 transform hover:-translate-y-1;
+  }
 
-.badge {
-  @apply inline-block px-4 py-1 bg-crypto-cyan/10 rounded-full text-crypto-cyan text-sm font-medium border border-crypto-cyan/20;
-}
+  .feature-card:hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0, 163, 255, 0.1), rgba(0, 163, 255, 0.05));
+    pointer-events: none;
+  }
 
-.stats-item {
-  @apply text-center p-4 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 transform hover:scale-105 transition-transform duration-300;
+  .testimonial-card {
+    @apply glass-card p-8 rounded-xl hover:shadow-lg hover:shadow-crypto-cyan/10 transition-all duration-300 transform hover:scale-[1.02];
+  }
+
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-crypto-cyan/10 text-crypto-cyan;
+  }
+
+  .section-title {
+    @apply text-4xl font-bold text-crypto-white mb-8;
+  }
+
+  .subheading {
+    @apply text-xl text-crypto-gray-light mb-6;
+  }
+
+  .stats-card {
+    @apply glass-card p-6 rounded-xl text-center;
+  }
+
+  .stats-number {
+    @apply text-3xl font-bold text-crypto-white mb-2;
+  }
+
+  .stats-label {
+    @apply text-crypto-gray-light text-sm;
+  }
+
+  .glass-card {
+    @apply bg-gradient-to-r from-crypto-blue-dark/50 to-crypto-blue-dark/30 backdrop-blur-lg border border-crypto-blue-dark/20;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-crypto-cyan to-crypto-blue-light bg-clip-text text-transparent;
+  }
+
+  .gradient-border {
+    @apply border border-t-crypto-cyan/50 border-b-crypto-blue-light/50;
+  }
+
+  .shadow-crypto {
+    @apply shadow-lg shadow-crypto-cyan/20;
+  }
+
+  .hover-shadow-crypto {
+    @apply hover:shadow-lg hover:shadow-crypto-cyan/30;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-crypto-cyan to-crypto-blue-light bg-clip-text text-transparent;
+  }
+
+  .bg-gradient {
+    @apply bg-gradient-to-r from-crypto-blue-dark to-crypto-blue-dark/80;
+  }
+
+  .glass-button {
+    @apply bg-gradient-to-r from-crypto-blue-dark/50 to-crypto-blue-dark/30 backdrop-blur-lg border border-crypto-blue-dark/20 px-8 py-4 rounded-md font-medium transition-all duration-200;
+  }
+
+  .glass-button:hover {
+    @apply bg-gradient-to-r from-crypto-blue-dark/40 to-crypto-blue-dark/20 border-crypto-blue-dark/30 transform translate-y-1;
+  }
 }
 
 @keyframes float {

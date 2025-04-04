@@ -1,9 +1,54 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db/prisma'
 import { chainNameMap, SOLANA_CHAIN_ID, TRON_CHAIN_ID } from '@/lib/config/chains'
 
-export async function POST(request: Request) {
+// Middleware to validate API key
+async function validateApiKey(request: NextRequest) {
+  const authHeader = request.headers.get('authorization')
+  
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return { 
+      valid: false, 
+      error: 'Missing or invalid API key',
+      status: 401 as const
+    }
+  }
+  
+  const apiKey = authHeader.split(' ')[1]
+  
+  if (!apiKey) {
+    return {
+      valid: false,
+      error: 'Missing API key',
+      status: 401 as const
+    }
+  }
+  
+  // Validate API key format
+  if (!apiKey.startsWith('pk_live_') && !apiKey.startsWith('pk_test_')) {
+    return { 
+      valid: false, 
+      error: 'Invalid API key format',
+      status: 401 as const
+    }
+  }
+  
+  // In a production environment, you would validate against stored API keys
+  // For now, we'll just check if it's a valid format
+  return { valid: true, isTest: apiKey.startsWith('pk_test_') }
+}
+
+export async function POST(request: NextRequest) {
   try {
+    // Validate API key
+    const apiKeyValidation = await validateApiKey(request)
+    if (!apiKeyValidation.valid) {
+      return NextResponse.json(
+        { error: apiKeyValidation.error },
+        { status: apiKeyValidation.status as number }
+      )
+    }
+    
     const body = await request.json()
     
     // Validate request body
@@ -22,9 +67,6 @@ export async function POST(request: Request) {
       )
     }
     
-    // In a real implementation, you would verify the merchant's API key
-    // and check if the merchant exists
-    
     // For simplicity, let's get the first merchant from the database
     const merchant = await prisma.merchant.findFirst({
       include: { user: true }
@@ -37,7 +79,7 @@ export async function POST(request: Request) {
       )
     }
     
-    // Create a new transaction
+    // Create a new transaction with all supported fields
     const transaction = await prisma.transaction.create({
       data: {
         merchantId: merchant.id,
@@ -46,6 +88,11 @@ export async function POST(request: Request) {
         currency: body.currency,
         chainId: body.chainId,
         status: 'PENDING',
+        description: body.description || '',
+        metadata: body.metadata || {},
+        // Store redirect URLs if provided
+        redirectUrl: body.redirectUrl,
+        cancelUrl: body.cancelUrl,
       },
     })
     
@@ -63,16 +110,25 @@ export async function POST(request: Request) {
       paymentAddress = generateEvmAddress();
     }
     
-    // In a production environment, we would store this address and associate it with the transaction
+    // Update the transaction with the wallet address
+    await prisma.transaction.update({
+      where: { id: transaction.id },
+      data: { walletAddress: paymentAddress }
+    });
     
+    // Format the response according to the API documentation
     return NextResponse.json({
       id: transaction.id,
-      status: transaction.status,
-      paymentAddress,
       amount: transaction.amount,
       currency: transaction.currency,
       chainId: transaction.chainId,
-      expiresAt: new Date(Date.now() + 30 * 60 * 1000), // 30 minutes
+      description: transaction.description || '',
+      status: transaction.status,
+      paymentUrl: `https://cryptoflow.com/payment/${transaction.id}`,
+      createdAt: transaction.createdAt,
+      expiresAt: new Date(transaction.createdAt.getTime() + 60 * 60 * 1000), // 1 hour expiry
+      metadata: transaction.metadata || {},
+      walletAddress: paymentAddress,
     })
   } catch (error) {
     console.error('Payment creation error:', error)
@@ -83,8 +139,17 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
+    // Validate API key
+    const apiKeyValidation = await validateApiKey(request)
+    if (!apiKeyValidation.valid) {
+      return NextResponse.json(
+        { error: apiKeyValidation.error },
+        { status: apiKeyValidation.status as number }
+      )
+    }
+    
     // Get query parameters
     const { searchParams } = new URL(request.url)
     const merchantId = searchParams.get('merchantId')
@@ -110,26 +175,43 @@ export async function GET(request: Request) {
     const transactions = await prisma.transaction.findMany({
       where: filter,
       take: limit,
-      skip,
-      orderBy: { createdAt: 'desc' },
+      skip: skip,
+      orderBy: {
+        createdAt: 'desc'
+      }
     })
     
-    // Get total count
+    // Get total count for pagination
     const total = await prisma.transaction.count({
-      where: filter,
+      where: filter
     })
+    
+    // Format the response according to the API documentation
+    const formattedTransactions = transactions.map((tx: any) => ({
+      id: tx.id,
+      amount: tx.amount,
+      currency: tx.currency,
+      chainId: tx.chainId,
+      description: tx.description || '',
+      status: tx.status,
+      paymentUrl: `https://cryptoflow.com/payment/${tx.id}`,
+      createdAt: tx.createdAt,
+      expiresAt: new Date(tx.createdAt.getTime() + 60 * 60 * 1000), // 1 hour expiry
+      metadata: tx.metadata || {},
+      walletAddress: tx.walletAddress,
+    }));
     
     return NextResponse.json({
-      transactions,
+      data: formattedTransactions,
       pagination: {
         total,
         page,
         limit,
-        totalPages: Math.ceil(total / limit),
-      },
+        pages: Math.ceil(total / limit)
+      }
     })
   } catch (error) {
-    console.error('Get transactions error:', error)
+    console.error('Get payments error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -139,26 +221,19 @@ export async function GET(request: Request) {
 
 // Helper functions to generate addresses for different blockchains
 function generateEvmAddress(): string {
-  // In a real implementation, this would use a secure method to generate or derive addresses
-  return '0x' + Array.from({length: 40}, () => 
-    Math.floor(Math.random() * 16).toString(16)
-  ).join('');
+  // In a real implementation, this would generate a secure Ethereum address
+  // For demo purposes, we'll return a static address
+  return '0x' + Array(40).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 }
 
 function generateSolanaAddress(): string {
-  // In a real implementation, this would use Solana's key generation
-  return Array.from({length: 44}, () => 
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'[
-      Math.floor(Math.random() * 62)
-    ]
-  ).join('');
+  // In a real implementation, this would generate a secure Solana address
+  // For demo purposes, we'll return a static address
+  return Array(44).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 }
 
 function generateTronAddress(): string {
-  // In a real implementation, this would use Tron's key generation
-  return 'T' + Array.from({length: 33}, () => 
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'[
-      Math.floor(Math.random() * 62)
-    ]
-  ).join('');
+  // In a real implementation, this would generate a secure Tron address
+  // For demo purposes, we'll return a static address
+  return 'T' + Array(33).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 }

@@ -1,7 +1,15 @@
 import React from 'react';
-import '../app/design-system.css';
+import '../../app/design-system.css';
 
-export function StatCard({ title, value, change, icon, color = 'crypto-cyan' }) {
+interface StatCardProps {
+  title: string;
+  value: string | number;
+  change: string;
+  icon: React.ReactNode;
+  color?: string;
+}
+
+export function StatCard({ title, value, change, icon, color = 'crypto-cyan' }: StatCardProps) {
   const isPositive = !change.includes('-');
   const trendColor = isPositive ? 'text-green-400' : 'text-red-400';
   

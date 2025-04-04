@@ -1,6 +1,15 @@
 import '../components.css';
+import { ReactNode } from 'react';
 
-export default function FeatureCard({ icon, title, description, linkText, linkHref }) {
+interface FeatureCardProps {
+  icon: ReactNode;
+  title: string;
+  description: string;
+  linkText: string;
+  linkHref: string;
+}
+
+export default function FeatureCard({ icon, title, description, linkText, linkHref }: FeatureCardProps) {
   return (
     <div className="feature-card">
       <div className="w-14 h-14 bg-crypto-cyan/20 rounded-xl flex items-center justify-center mb-6 group-hover:bg-crypto-cyan/30 transition-all duration-300">

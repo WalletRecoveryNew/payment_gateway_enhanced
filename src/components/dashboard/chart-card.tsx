@@ -1,7 +1,13 @@
-import React from 'react';
-import '../app/design-system.css';
+import React, { ReactNode } from 'react';
+import '../../app/design-system.css';
 
-export function ChartCard({ title, children, className = '' }) {
+interface ChartCardProps {
+  title: string;
+  children: ReactNode;
+  className?: string;
+}
+
+export function ChartCard({ title, children, className = '' }: ChartCardProps) {
   return (
     <div className={`glass-card p-6 ${className}`}>
       <h3 className="text-lg font-medium text-crypto-white mb-4">{title}</h3>
