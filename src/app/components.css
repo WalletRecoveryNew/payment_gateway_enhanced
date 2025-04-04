@@ -1,0 +1,48 @@
+.cta-button {
+  @apply bg-crypto-cyan text-crypto-blue-dark px-8 py-4 rounded-md font-medium hover:bg-crypto-cyan/90 transition-all duration-200 shadow-lg shadow-crypto-cyan/20 text-lg transform hover:scale-105;
+}
+
+.secondary-button {
+  @apply border border-white/20 text-crypto-white px-8 py-4 rounded-md font-medium hover:bg-white/5 transition-all duration-200 text-lg transform hover:translate-x-1;
+}
+
+.nav-link {
+  @apply text-crypto-gray-light hover:text-crypto-cyan transition-colors duration-200 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-crypto-cyan after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300;
+}
+
+.feature-card {
+  @apply glass-card p-8 rounded-xl hover:shadow-lg hover:shadow-crypto-cyan/10 transition-all duration-300 group transform hover:-translate-y-1;
+}
+
+.testimonial-card {
+  @apply glass-card p-8 rounded-xl hover:shadow-lg hover:shadow-crypto-cyan/10 transition-all duration-300 transform hover:scale-[1.02];
+}
+
+.badge {
+  @apply inline-block px-4 py-1 bg-crypto-cyan/10 rounded-full text-crypto-cyan text-sm font-medium border border-crypto-cyan/20;
+}
+
+.stats-item {
+  @apply text-center p-4 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 transform hover:scale-105 transition-transform duration-300;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delay-1 {
+  animation: float 6s ease-in-out 1s infinite;
+}
+
+.animate-float-delay-2 {
+  animation: float 6s ease-in-out 2s infinite;
+}
